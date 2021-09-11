@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Rocky.Data;
-using Rocky.Utility;
+using Rocky_DataAccess.Data;
+using Rocky_Utility;
 
 namespace Rocky
 {
@@ -30,10 +30,13 @@ namespace Rocky
         {
             services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(
-                Configuration.GetConnectionString("DefaultConnection")));
+                Configuration.GetConnectionString("DefaultConnection")/*,
+                b=> b.MigrationsAssembly("Rocky_DataAccess")*/));
+
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddDefaultTokenProviders().AddDefaultUI()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
             services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddHttpContextAccessor();

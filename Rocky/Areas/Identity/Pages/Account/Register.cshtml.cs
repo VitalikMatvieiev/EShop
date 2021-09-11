@@ -13,7 +13,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using Rocky.Models;
+using Rocky_Models;
+using Rocky_Utility;
 
 namespace Rocky.Areas.Identity.Pages.Account
 {
@@ -117,7 +118,14 @@ namespace Rocky.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        if (!User.IsInRole(WC.AdminRole))
+                        {
+                            await _signInManager.SignInAsync(user, isPersistent: false);
+                        }
+                        else
+                        {
+                            return RedirectToAction(nameof(Index));
+                        }
                         return LocalRedirect(returnUrl);
                     }
                 }
