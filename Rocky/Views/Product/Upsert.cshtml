@@ -1,6 +1,7 @@
-﻿@model Rocky.Models.ViewModels.ProductVM
+﻿@model Rocky_Models.ViewModels.ProductVM
+@using Rocky_Utility
 
-@{ 
+@{
     var title = "Create Product";
 }
 
@@ -11,13 +12,13 @@
         <input asp-for="Product.Id" hidden />
     }
 
-    <div class="border p-3">
+    <div class="border p-3 bg-white">
         <div class="form-group row">
             <h2 class="text-info pl-3">@title</h2>
         </div>
         <div class="row">
             <div class="col-8">
-                <div class="form-group row">
+                <div class="form-group row py-2">
                     <div class="col-4">
                         <label asp-for="Product.Name"></label>
                     </div>
@@ -27,7 +28,7 @@
                     </div>
                 </div>
 
-                <div class="form-group row">
+                <div class="form-group row py-2">
                     <div class="col-4">
                         <label asp-for="Product.Price"></label>
                     </div>
@@ -37,7 +38,7 @@
                     </div>
                 </div>
 
-                <div class="form-group row">
+                <div class="form-group row py-2">
                     <div class="col-4">
                         <label asp-for="Product.ShortDesc"></label>
                     </div>
@@ -47,7 +48,7 @@
                     </div>
                 </div>
 
-                <div class="form-group row">
+                <div class="form-group row py-2">
                     <div class="col-4">
                         <label asp-for="Product.Description"></label>
                     </div>
@@ -57,7 +58,7 @@
                     </div>
                 </div>
 
-                <div class="form-group row">
+                <div class="form-group row py-2">
                     <div class="col-4">
                         Image
                     </div>
@@ -66,31 +67,31 @@
                     </div>
                 </div>
 
-                <div class="form-group row">
+                <div class="form-group row py-2">
                     <div class="col-4">
                         <label asp-for="Product.CategoryId"></label>
                     </div>
                     <div class="col-8">
-                        <select asp-for="Product.CategoryId" asp-items="Model.CategorySelectionList" class="form-control">
+                        <select asp-for="Product.CategoryId" asp-items="Model.CategorySelectionList" class="form-select">
                             <option selected>--Select Category--</option>
                         </select>
                         <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
                     </div>
                 </div>
 
-                <div class="form-group row">
+                <div class="form-group row py-2">
                     <div class="col-4">
                         <label asp-for="Product.ApplicationTypeId"></label>
                     </div>
                     <div class="col-8">
-                        <select asp-for="Product.ApplicationTypeId" asp-items="@Model.ApplicationTypeSelectList" class="form-control">
+                        <select asp-for="Product.ApplicationTypeId" asp-items="@Model.ApplicationTypeSelectList" class="form-select">
                             <option disabled selected>--Select Application Type--</option>
                         </select>
                         <span asp-validation-for="Product.ApplicationTypeId" class="text-danger"></span>
                     </div>
                 </div>
 
-                <div class="form-group row">
+                <div class="form-group row py-2">
                     <div class="col-8 offset-4 row">
 
                         <div class="col">
@@ -111,7 +112,7 @@
                 </div>
             </div>
             <div class="col-4">
-                @if(Model.Product.Id != 0)
+                @if (Model.Product.Id != 0)
                 {
                     <img src="@WC.ImagePath@Model.Product.Image" width="100%" style="border-radius:5px; border: 1px solid #bbb" />
                 }
