@@ -33,7 +33,7 @@ namespace Rocky_DataAccess.Repository
         public T FirstOrDefault(Expression<Func<T, bool>> filter = null, string includeProperties = null, bool isTracking = true)
         {
             IQueryable<T> query = dbSet;
-            if (filter == null)
+            if (filter != null)
             {
                 query = query.Where(filter);
             }

@@ -23,7 +23,7 @@ namespace Rocky_Models
         [Required]
         public int ProductId { get; set; }
 
-        [ForeignKey("InquiryHeaderId")]
+        [ForeignKey("ProductId")]
         public Product Product { get; set; }
 
     }

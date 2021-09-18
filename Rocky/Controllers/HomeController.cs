@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Rocky_DataAccess.Data;
+using Rocky_DataAccess.Repository.IRepository;
 using Rocky_Models;
 using Rocky_Models.ViewModels;
 using Rocky_Utility;
@@ -16,20 +17,23 @@ namespace Rocky.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly ApplicationDbContext _db;
+        private readonly IProductRepository _prodRep;
+        private readonly ICategoryRepository _categoryRep;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext db)
+
+        public HomeController(ILogger<HomeController> logger, IProductRepository prodRep, ICategoryRepository categoryRep)
         {
             _logger = logger;
-            _db = db;
+            _prodRep = prodRep;
+            _categoryRep = categoryRep;
         }
 
         public IActionResult Index()
         {
             HomeVM homeVM = new HomeVM()
             {
-                Products = _db.Product.Include(u => u.Category).Include(u=>u.ApplicationType),
-                Categories = _db.Category
+                Products = _prodRep.GetAll(includeProperties: "Category,ApplicationType"),
+                Categories = _categoryRep.GetAll()
             };
 
             return View(homeVM);
@@ -46,7 +50,7 @@ namespace Rocky.Controllers
 
             DetailsVM detailsVM = new DetailsVM()
             {
-                Product = _db.Product.Include(u => u.Category).Include(u => u.ApplicationType).FirstOrDefault(u => u.Id == id),
+                Product = _prodRep.FirstOrDefault(u => u.Id == id,includeProperties: "Category,ApplicationType"),
                 ExistsInCart = false
             };
 
