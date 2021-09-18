@@ -32,8 +32,7 @@ namespace Rocky
         {
             services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(
-                Configuration.GetConnectionString("DefaultConnection")/*,
-                b=> b.MigrationsAssembly("Rocky_DataAccess")*/));
+                Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddDefaultTokenProviders().AddDefaultUI()
@@ -50,6 +49,7 @@ namespace Rocky
             });
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IApplicationTypeRepository, ApplicationTypeRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
 
             services.AddControllersWithViews();
         }
