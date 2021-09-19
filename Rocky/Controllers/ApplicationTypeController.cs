@@ -2,6 +2,7 @@
 using Rocky_DataAccess.Data;
 using Rocky_DataAccess.Repository.IRepository;
 using Rocky_Models;
+using Rocky_Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +36,9 @@ namespace Rocky.Controllers
             {
                 _appTypeRep.Add(obj);
                 _appTypeRep.Save();
+
+                TempData[WC.Success] = "Category was created";
+
                 return Redirect("Index");
             }
             return View(obj);
@@ -64,6 +68,9 @@ namespace Rocky.Controllers
             {
                 _appTypeRep.Update(obj);
                 _appTypeRep.Save();
+
+                TempData[WC.Success] = "Category was edited";
+
                 return RedirectToAction("Index");
             }
             return View(obj);
@@ -97,6 +104,7 @@ namespace Rocky.Controllers
             }
             _appTypeRep.Remove(obj);
             _appTypeRep.Save();
+            TempData[WC.Success] = "Category was deleted";
             return RedirectToAction("Index");
 
         }

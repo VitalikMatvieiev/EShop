@@ -66,7 +66,7 @@ namespace Rocky.Controllers
             {
                 return NotFound();
             }
-
+            
             return View(obj);
         }
         //POST - EDIT
@@ -78,6 +78,7 @@ namespace Rocky.Controllers
             {
                 _catRepo.Update(obj);
                 _catRepo.Save();
+                TempData[WC.Success] = "Category was edited";
                 return RedirectToAction("Index");
             }
             return View(obj);
@@ -111,6 +112,9 @@ namespace Rocky.Controllers
             }
             _catRepo.Remove(obj);
             _catRepo.Save();
+
+            TempData[WC.Success] = "Category was deleted";
+
             return RedirectToAction("Index");
 
         }
