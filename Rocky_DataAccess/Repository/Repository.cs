@@ -33,7 +33,7 @@ namespace Rocky_DataAccess.Repository
         public T FirstOrDefault(Expression<Func<T, bool>> filter = null, string includeProperties = null, bool isTracking = true)
         {
             IQueryable<T> query = dbSet;
-            if (filter == null)
+            if (filter != null)
             {
                 query = query.Where(filter);
             }
@@ -54,7 +54,7 @@ namespace Rocky_DataAccess.Repository
         public IEnumerable<T> GetAll(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedEnumerable<T>> orderBy = null, string includeProperties = null, bool isTracking = true)
         {
             IQueryable<T> query = dbSet;
-            if(filter == null)
+            if(filter != null)
             {
                 query = query.Where(filter);
             }
@@ -79,6 +79,11 @@ namespace Rocky_DataAccess.Repository
         public void Remove(T entity)
         {
             dbSet.Remove(entity);
+        }
+
+        public void RemoveRange(IEnumerable<T> entities)
+        {
+            dbSet.RemoveRange(entities);
         }
 
         public void Save()

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Rocky_DataAccess.Data;
 
 namespace Rocky_DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210918062344_AddInquiryTableToDatabase")]
+    partial class AddInquiryTableToDatabase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -273,8 +275,6 @@ namespace Rocky_DataAccess.Migrations
 
                     b.HasIndex("InquiryHeaderId");
 
-                    b.HasIndex("ProductId");
-
                     b.ToTable("InquiryDetail");
                 });
 
@@ -299,7 +299,7 @@ namespace Rocky_DataAccess.Migrations
                     b.Property<DateTime>("InquiryDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("PhoneNumber")
+                    b.Property<string>("PhoneName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -419,7 +419,7 @@ namespace Rocky_DataAccess.Migrations
 
                     b.HasOne("Rocky_Models.Product", "Product")
                         .WithMany()
-                        .HasForeignKey("ProductId")
+                        .HasForeignKey("InquiryHeaderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
