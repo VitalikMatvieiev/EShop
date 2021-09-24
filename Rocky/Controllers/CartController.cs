@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Braintree;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Rocky_DataAccess.Data;
@@ -6,6 +7,7 @@ using Rocky_DataAccess.Repository.IRepository;
 using Rocky_Models;
 using Rocky_Models.ViewModels;
 using Rocky_Utility;
+using Rocky_Utility.BrainTree;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,13 +25,15 @@ namespace Rocky.Controllers
         private readonly IInquiryHeaderRepository _inquiryHeaderilRep;
         private readonly IOrderDetailRepository _orderDetailRep;
         private readonly IOrderHeaderRepository _orderHeaderilRep;
+        private readonly IBrainTreeGate _brain;
 
         [BindProperty]
         public ProductUserVM ProductUserVM { get; set; }
 
         public CartController(IProductRepository prodRep, IApplicationUserRepository appUserRep,
             IInquiryDetailRepository inquiryDetailRep, IInquiryHeaderRepository inquiryHeaderilRep,
-            IOrderDetailRepository orderDetailRep, IOrderHeaderRepository orderHeaderilRep)
+            IOrderDetailRepository orderDetailRep, IOrderHeaderRepository orderHeaderilRep,
+            IBrainTreeGate brain)
         {
             _prodRep = prodRep;
             _appUserRep = appUserRep;
@@ -37,6 +41,7 @@ namespace Rocky.Controllers
             _inquiryHeaderilRep = inquiryHeaderilRep;
             _orderDetailRep = orderDetailRep;
             _orderHeaderilRep = orderHeaderilRep;
+            _brain = brain;
 
 
         }
@@ -99,6 +104,10 @@ namespace Rocky.Controllers
                 {
                     applicationUser = new ApplicationUser();
                 }
+
+                var gatway = _brain.GetGetway();
+                var clientToken = gatway.ClientToken.Generate();
+                ViewBag.ClientToken = clientToken;
             }
             else
             {
@@ -137,7 +146,7 @@ namespace Rocky.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ActionName("Summary")]
-        public IActionResult SummaryPost(ProductUserVM ProductUserVM)
+        public IActionResult SummaryPost(IFormCollection collection, ProductUserVM ProductUserVM)
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
@@ -175,6 +184,33 @@ namespace Rocky.Controllers
                         Sqft = prod.TempSqFt,
                     };
                     _orderDetailRep.Add(orderDetail);
+                }
+                _orderDetailRep.Save();
+
+                string nonceFromTheClient = collection["payment_method_nonce"];
+
+                var request = new TransactionRequest
+                {
+                    Amount = Convert.ToDecimal(orderHeader.FinalOrderTotal),
+                    PaymentMethodNonce = nonceFromTheClient,
+                    OrderId = orderHeader.Id.ToString(),
+                    Options = new TransactionOptionsRequest
+                    {
+                        SubmitForSettlement = true
+                    }
+                };
+
+                var gateway = _brain.GetGetway();
+                Result<Transaction> result = gateway.Transaction.Sale(request);
+
+                if(result.Target.ProcessorResponseText == "Approved")
+                {
+                    orderHeader.TransactionId = result.Target.Id;
+                    orderHeader.OrderStatus = WC.StatusApproved;
+                }
+                else
+                {
+                    orderHeader.OrderStatus = WC.Statuscancelled;
                 }
                 _orderDetailRep.Save();
                 return RedirectToAction(nameof(InquiryConfirmation), new { id = orderHeader.Id});
@@ -233,6 +269,11 @@ namespace Rocky.Controllers
             List<int> prodInCart = shoppingCartsList.Select(i => i.ProductId).ToList();
             IEnumerable<Product> prodList = _prodRep.GetAll(u => prodInCart.Contains(u.Id));
             return View(nameof(Index),prodList);
+        }
+        public IActionResult Clear()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index","Home");
         }
 
         [HttpPost]

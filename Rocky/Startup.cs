@@ -61,6 +61,12 @@ namespace Rocky
             services.AddScoped<IOrderHeaderRepository, OrderHeaderRepository>();
             services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
 
+            services.AddAuthentication().AddFacebook(Options =>
+            {
+                Options.AppId = "1674067412796624";
+                Options.AppSecret = "3d04408879fc77663600337c4d508769";
+            });
+
             services.AddControllersWithViews();
         }
 

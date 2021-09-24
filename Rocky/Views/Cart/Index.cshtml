@@ -1,5 +1,5 @@
 ﻿@model List<Product>
-@using Rocky_Utility 
+@using Rocky_Utility
 
 @if (Model.Count() > 0)
 {
@@ -15,6 +15,7 @@
                                 Shopping Cart
                             </div>
                             <div class="col-6 text-right">
+                                <a asp-controller="Cart" asp-action="Clear" class="btn btn-outline-warning btn-sm">Clear Cart</a>
                                 <a asp-controller="Home" asp-action="Index" class="btn btn-outline-info btn-sm">Continue Shopping</a>
                             </div>
                         </div>
@@ -54,14 +55,14 @@
                             </div>
 
                             <hr />
-                            @{ 
+                            @{
                                 var orderTotal = 0.0;
                             }
 
                             @for (int i = 0; i < Model.Count(); i++)
                             {
                                 <input hidden asp-for="@Model[i].Id" />
-                            
+
                                 <div class="row h-100">
                                     <div class="col-4 col-md-2 text-center py-2">
                                         <img src="@WC.ImagePath@Model[i].Image" class="rounded" width="100%" />
@@ -101,23 +102,24 @@
                                 </div>
                                 orderTotal += Model[i].Price * Model[i].TempSqFt;
                             }
-                            @if (User.IsInRole(WC.AdminRole)) {
+                            @if (User.IsInRole(WC.AdminRole))
+                            {
                                 <div class="row">
                                     <div class="col-12 text-right pr-4" style="color:#821f3d">
                                         Order total: @string.Format("{0:c}", orderTotal)
                                     </div>
                                 </div>
                             }
-                                
-                                <hr />
-                            </div>
+
+                            <hr />
+                        </div>
                         <div class="card-footer">
                             <div class="row">
                                 <div class="col-6 col-md-3 offset-md-6">
-                                    @if(User.IsInRole(WC.AdminRole))
+                                    @if (User.IsInRole(WC.AdminRole))
                                     {
                                         <input type="submit" asp-action="UpdateCart" formmethod="post" name="Update" value="Update Cart"
-                                               class="btn btn-info form-control" /> 
+                                               class="btn btn-info form-control" />
                                     }
                                 </div>
                                 <div class="col-6 col-md-3">

@@ -1,6 +1,6 @@
 ﻿@model Rocky_Models.ViewModels.ProductUserVM
 
-<form method="post">
+<form method="post" id="payment-form">
     <br />
     <div class="backgroundWhiteBorder">
         <div class="container">
@@ -122,16 +122,27 @@
                                                 }
                                             </li>
                                             orderTotalPrice += Model.ProductList[i].Price * Model.ProductList[i].TempSqFt;
-                                            }
-                                            @if (User.IsInRole(Rocky_Utility.WC.AdminRole))
-                                            {
-                                                <li class="list-group-item d-flex justify-content-between bg-light">
-                                                    <small class="text-info">Total (USD)</small>
-                                                    <strong class="text-info">$@orderTotalPrice</strong>
-                                                </li>
-                                            }
-                                        </ul>
+                                        }
+                                        @if (User.IsInRole(Rocky_Utility.WC.AdminRole))
+                                        {
+                                            <li class="list-group-item d-flex justify-content-between bg-light">
+                                                <small class="text-info">Total (USD)</small>
+                                                <strong class="text-info">$@orderTotalPrice</strong>
+                                            </li>
+                                        }
+                                    </ul>
                                 </div>
+                                @if (User.IsInRole(Rocky_Utility.WC.AdminRole))
+                                {
+                                    <div class="col-12">
+                                        <div class="wrapper">
+                                            <div class="checkout container">
+                                                <div id="dropin-container"></div>
+                                                <input id="nonce" name="payment_method_nonce" type="hidden" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>
@@ -159,4 +170,26 @@
 
 @section Scripts{
     <partial name="_ValidationScriptsPartial" />
+    <script src="https://js.braintreegateway.com/web/dropin/1.31.2/js/dropin.min.js"></script>
+    <script>
+        debugger
+        var client_token = "@ViewBag.ClientToken";
+        var form = document.querySelector('#payment-form');
+        braintree.dropin.create({
+            authorization: client_token,
+            container: '#dropin-container'
+        }, function (createErr, instance) {
+                form.addEventListener('submit', function () {
+                    event.preventDefault();
+                    //Add the nonce to the form and submit
+                });
+                instance.requestPaymentMethod(function (err, payload) {
+                    // Submit payload.nonce to your server
+                    document.querySelector('#nonce').value = payload.nonce;
+                    form.submit();
+                });
+        });
+    </script>
+
+
 }
