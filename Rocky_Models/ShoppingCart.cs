@@ -9,5 +9,7 @@ namespace Rocky_Models
     {
         public int ProductId { get; set; }
 
+        public int SqFt { get; set; }
+
     }
 }
