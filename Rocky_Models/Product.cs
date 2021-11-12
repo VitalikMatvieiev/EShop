@@ -9,6 +9,10 @@ namespace Rocky_Models
 {
     public class Product
     {
+        public Product()
+        {
+            TempSqFt = 1;
+        }
         [Key]
         public int Id { get; set; }
         [Required]
@@ -30,5 +34,9 @@ namespace Rocky_Models
         public int ApplicationTypeId { get; set; }
         [ForeignKey("ApplicationTypeId")]
         public virtual ApplicationType ApplicationType { get; set; }
+
+        [NotMapped]
+        [Range(1, 10000, ErrorMessage = "Sqft must be greater than 0.")]
+        public int TempSqFt { get; set; }
     }
 }
