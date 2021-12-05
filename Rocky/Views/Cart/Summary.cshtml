@@ -1,6 +1,7 @@
-﻿@model List<Product>
+﻿@model ProductUserVM
+@using Rocky_Models.ViewModels
 @using Rocky_Utility
-@if (Model.Count() > 0)
+@if (Model.ProductList.Count() > 0)
 {
 
 
@@ -58,51 +59,51 @@
                             @{
                                 var orderTotal = 0.0;
                             }
-                            @for (int i = 0; i < Model.Count(); i++)
+                            @for (int i = 0; i < Model.ProductList.Count(); i++)
                             {
-                                <input hidden asp-for="@Model[i].Id" />
+                                <input hidden asp-for="@Model.ProductList[i].Id" />
                                 <div class="row h-100">
                                     <div class="col-4 col-md-2 text-center py-2">
-                                        <img src="@WC.ImagePath@Model[i].Image" class="rounded" width="100%" />
+                                        <img src="@WC.ImagePath@Model.ProductList[i].Image" class="rounded" width="100%" />
                                     </div>
                                     @if (User.IsInRole(WC.AdminRole))
                                     {
 
                                         <div class="col-8 col-lg-3">
-                                            <h5>@Model[i].Name</h5>
-                                            <div style="font-size:11px;">@Model[i].ShortDesc</div>
+                                            <h5>@Model.ProductList[i].Name</h5>
+                                            <div style="font-size:11px;">@Model.ProductList[i].ShortDesc</div>
                                         </div>
                                     }
                                     else
                                     {
                                         <div class="col-8 col-lg-7">
-                                            <h5>@Model[i].Name</h5>
-                                            <div style="font-size:11px;">@Model[i].ShortDesc</div>
+                                            <h5>@Model.ProductList[i].Name</h5>
+                                            <div style="font-size:11px;">@Model.ProductList[i].ShortDesc</div>
                                         </div>
                                     }
                                     <div class="col-3 col-lg-2 pt-lg-4" style="font-size:11px;">
-                                        <span style="font-size:17px;"> $@Model[i].Price</span>/ sqft
+                                        <span style="font-size:17px;"> $@Model.ProductList[i].Price</span>/ sqft
 
                                     </div>
                                     @if (User.IsInRole(WC.AdminRole))
                                     {
                                         <div class="col-4 col-lg-2 pt-lg-4" style="font-size:11px;">
-                                            <input type="text" asp-for="@Model[i].TempSqFt" class="form-control" />
-                                            <span asp-validation-for="@Model[i].TempSqFt" class="text-danger"></span>
+                                            <input type="text" asp-for="@Model.ProductList[i].TempSqFt" class="form-control" />
+                                            <span asp-validation-for="@Model.ProductList[i].TempSqFt" class="text-danger"></span>
                                         </div>
                                         <div class="col-3 col-lg-2 pt-lg-4" style="font-size:11px;">
-                                            <span style="font-size:17px;"> $@(Model[i].Price* Model[i].TempSqFt)</span>
+                                            <span style="font-size:17px;"> $@(Model.ProductList[i].Price* Model.ProductList[i].TempSqFt)</span>
 
 
                                         </div>
                                     }
                                     <div class="col-2 col-lg-1 p-0 pt-lg-4 text-center">
-                                        <a asp-action="Remove" asp-route-id="@Model[i].Id" class="btn btn-outline-danger">
+                                        <a asp-action="Remove" asp-route-id="@Model.ProductList[i].Id" class="btn btn-outline-danger">
                                             <i class="fas fa-trash"></i>
                                         </a>
                                     </div>
                                 </div>
-                                orderTotal += Model[i].Price * Model[i].TempSqFt;
+                                orderTotal += Model.ProductList[i].Price * Model.ProductList[i].TempSqFt;
                                 <hr />
                             }
 
