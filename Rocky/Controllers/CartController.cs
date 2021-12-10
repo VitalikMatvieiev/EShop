@@ -84,6 +84,7 @@ namespace Rocky.Controllers
             return RedirectToAction(nameof(Summary));
         }
 
+        [HttpGet]
         public IActionResult Summary()
         {
             ApplicationUser applicationUser;
